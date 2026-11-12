@@ -22,8 +22,11 @@ function answerCatalog(message, products) {
   if (!words.length) return { reply:'Olá! Qual produto você procura? Informe o nome ou código para eu consultar o catálogo da loja.', matches:[] };
   const matches = products.filter(p=>words.every(w=>normalize(`${p.name} ${p.sku} ${p.barcode || ''}`).includes(w))).slice(0,5);
   if (!matches.length) return { reply:'Não encontrei esse produto no catálogo desta loja. Você pode informar outro nome ou o código?', matches:[] };
-  const money=v=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(v/100);
-  const reply=matches.map(p=>p.availability==='DISCONTINUED'?`${p.name}: a loja não trabalha mais com este produto.`:p.availability==='OUT_OF_STOCK'?`${p.name}: está sem estoque no momento.`:p.price_cents==null?`${p.name}: preço de venda ainda não informado. Consulte a equipe da loja.`:`${p.name}: ${money(p.price_cents)} — disponível, conforme informado pela loja.`).join('\n');
+  const reply=renderProducts(matches);
   return { reply, matches:matches.map(p=>({id:p.id,name:p.name,availability:p.availability})) };
 }
-module.exports={parseInvoice,answerCatalog};
+function renderProducts(products){
+  const money=v=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(v/100);
+  return products.map(p=>p.availability==='DISCONTINUED'?`${p.name}: a loja não trabalha mais com este produto.`:p.availability==='OUT_OF_STOCK'?`${p.name}: está sem estoque no momento.`:p.price_cents==null?`${p.name}: preço de venda ainda não informado. Consulte a equipe da loja.`:`${p.name}: ${money(p.price_cents)} — disponível, conforme informado pela loja.`).join('\n');
+}
+module.exports={parseInvoice,answerCatalog,renderProducts};

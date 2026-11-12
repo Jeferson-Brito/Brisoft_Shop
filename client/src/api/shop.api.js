@@ -1,5 +1,6 @@
 import http from './http'
 export const shopApi = {
+  integrations:()=>http.get('/shop/integrations'),
   workspace: () => http.get('/shop/workspace'),
   context: () => http.get('/shop/context'),
   createCompany: (data) => http.post('/shop/company',data),

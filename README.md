@@ -17,10 +17,10 @@ As credenciais acima são exclusivas desta demonstração. O arquivo `server/.en
 - Produtos: cadastro e edição de nome, código, código de barras, categoria, unidade, preço e disponibilidade manual. A edição concorrente é bloqueada por versão.
 - NF-e: leitura de XML ou PDF cadastra os novos produtos automaticamente com preço de venda pendente. Produtos existentes são preservados por código ou código de barras. Complete preços e disponibilidade em Produtos.
 - Histórico: últimas 100 alterações da loja, com autor, data e valores anteriores e novos.
-- Simulador: consulta ao catálogo por palavras, com preços e disponibilidade do cadastro. Sem LLM ou custo de API.
+- Simulador: Gemini interpreta perguntas quando configurado; o servidor responde com preços e disponibilidade do cadastro. Sem configuração ou no limite diário, usa consulta direta ao catálogo. Veja INTEGRACOES_TESTE.md.
 - Departamentos: cadastro, edição e desativação de setores, como Balcão, Açougue e Caixa.
-- Conversas: mantém os componentes visuais do Desk, com mensagens, transferência por departamento, observação, resposta da equipe e encerramento. Nesta versão as conversas são criadas pelo simulador, sem WhatsApp conectado.
-- Configurações: nome da loja, descrição, endereço, telefone e texto de horários. Essas informações ainda não são interpretadas automaticamente pelo simulador.
+- Conversas: mantém os componentes visuais do Desk, com mensagens, transferência por departamento, observação, resposta da equipe e encerramento. Conversas podem vir do simulador ou do WhatsApp Cloud API de teste, após concluir credenciais, destinatários e webhook na Meta. O status real aparece em Configurações.
+- Configurações: nome da loja, descrição, endereço, telefone e texto de horários. Endereço e horários são consultados pelo atendimento com Gemini configurado.
 
 ## Testar o fluxo
 
@@ -80,7 +80,7 @@ npm test --prefix client
 npm run build --prefix client
 ```
 
-126 testes do servidor e 19 da interface passaram, incluindo testes herdados e novos. Os novos verificam isolamento do catálogo, preços, conflitos de edição, XML inseguro, confirmação atômica, importação duplicada, transferência entre setores, pausa do bot e persistência após reinicialização.
+132 testes do servidor e 19 da interface passaram, incluindo testes herdados e novos. Os novos verificam isolamento do catálogo, preços, conflitos de edição, XML inseguro, confirmação atômica, importação duplicada, transferência entre setores, pausa do bot e persistência após reinicialização.
 
 Também foram conferidos no servidor local: autenticação obrigatória, indisponibilidade das rotas antigas de indicadores e QR Code, consulta ao catálogo, departamentos e conversas de teste.
 
@@ -94,8 +94,8 @@ O módulo de conversas mantém a fila, os cards, os balões e o modal de transfe
 
 - Configurar projetos próprios no Render e Supabase, conforme decisão do responsável. O código utiliza o repositório próprio https://github.com/Jeferson-Brito/Brisoft_Shop. Render e Supabase ainda aguardam configuração.
 - Concluir o armazenamento de todos os módulos no novo PostgreSQL, migrar e validar os usuários e as permissões por departamento no banco definitivo.
-- Integrar uma LLM mediante escolha e autorização de orçamento.
-- Integrar o WhatsApp Cloud API oficial, com verificação de assinatura, deduplicação de eventos e associação do número à empresa.
+- Validar a cota gratuita e o uso do Gemini com perguntas de teste. Não há ativação de faturamento nesta etapa.
+- Concluir a ativação do número de teste, destinatários e webhook HTTPS na Meta. O código de assinatura, deduplicação, fila e associação à empresa está implementado; sem as credenciais, o canal fica desativado.
 - Validar publicação, dependências, backups, restauração e segurança antes da operação real.
 
 Este piloto ainda não está pronto para produção. Os scripts SQL do catálogo foram preparados em etapa anterior; a configuração e validação do novo serviço de banco permanecem para depois.
@@ -105,3 +105,7 @@ Este piloto ainda não está pronto para produção. Os scripts SQL do catálogo
 Disponível em http://127.0.0.1:5180/usuarios. Administradores cadastram acessos e autorizam os departamentos de cada atendente. Alterações de acesso revogam as sessões; transferências para outro setor retiram a conversa da fila do atendente anterior. Veja [ACESSOS_LOCAIS.md](ACESSOS_LOCAIS.md) para o roteiro completo de teste.
 
 A leitura atual cadastra os itens novos sem preço (valor nulo, distinto de zero) e com disponibilidade inicial Sem estoque. É possível filtrar Sem preço de venda e preencher depois. O atendimento nunca anuncia preço zero para itens pendentes. As rotas antigas de prévia/conferência permanecem apenas por compatibilidade; a interface usa leitura e cadastro automático.
+
+## IA e WhatsApp de teste
+
+Consulte [INTEGRACOES_TESTE.md](INTEGRACOES_TESTE.md) para configuração, cotas gratuitas, restrições e estado do piloto. As credenciais reais ficam apenas no ambiente local e nunca são publicadas neste repositório.

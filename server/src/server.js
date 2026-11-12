@@ -3,6 +3,10 @@ const express=require('express');
 const cors=require('cors');
 const path=require('node:path');
 const routes=require('./routes/api');
+const {shopService}=require('./services/shop.service');
+const {createWhatsAppCloud}=require('./routes/whatsapp-cloud');
+const {shopAuth}=require('./services/shop-auth.service');
+const cloud=createWhatsAppCloud({service:shopService});
 if(!process.env.JWT_SECRET||process.env.JWT_SECRET.length<32)throw new Error('Configure um JWT_SECRET próprio com pelo menos 32 caracteres.');
 const app=express();app.disable('x-powered-by');
 const allowed=(process.env.ALLOWED_ORIGINS||'http://localhost:3010,http://localhost:5180').split(',').map(s=>s.trim());
@@ -10,13 +14,14 @@ app.use(cors({origin:allowed,methods:['GET','POST','PUT','DELETE']}));
 app.use((req,res,next)=>{res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('X-Frame-Options','DENY');res.setHeader('Referrer-Policy','strict-origin-when-cross-origin');if(req.path.startsWith('/api'))res.setHeader('Cache-Control','no-store');next()});
 const rate=new Map();const timer=setInterval(()=>{for(const [ip,data] of rate)if(Date.now()-data.start>60000)rate.delete(ip)},60000);timer.unref();
 app.use('/api',(req,res,next)=>{const ip=req.ip,now=Date.now();let current=rate.get(ip);if(!current||now-current.start>60000){current={start:now,count:0};rate.set(ip,current)}if(++current.count>240)return res.status(429).json({success:false,error:'Muitas solicitações. Aguarde um minuto.'});next()});
+app.use('/api/whatsapp',cloud.router);
 app.use(express.json({limit:'3mb'}));
-app.get('/api/health',(req,res)=>res.json({app:'Brisoft Shop',status:'online',whatsapp:'disabled'}));
+app.get('/api/shop/integrations',shopAuth.requireAuth,shopAuth.requireAdmin,async(req,res,next)=>{try{const {company}=await shopService.context(req.user);res.json({success:true,company_id:company?.id,...shopService.integrationStatus(company?.id),whatsapp:cloud.status(company?.id)});}catch(error){next(error);}});
+app.get('/api/health',(req,res)=>res.json({app:'Brisoft Shop',status:'online',whatsapp:cloud.status(process.env.WHATSAPP_COMPANY_ID).enabled?'test-configured':'disabled'}));
 app.use('/api',routes);
 app.use('/api',(req,res)=>res.status(404).json({success:false,error:'Rota indisponível no Brisoft Shop.'}));
 const dist=path.resolve(__dirname,'../../client/dist');app.use(express.static(dist));
 app.get('*',(req,res)=>res.sendFile(path.join(dist,'index.html')));
 app.use((error,req,res,next)=>{const status=error.type==='entity.too.large'?413:error instanceof SyntaxError?400:500;res.status(status).json({success:false,error:status===413?'O arquivo excede o tamanho permitido.':status===400?'Corpo da solicitação inválido.':'Não foi possível concluir a operação.'})});
-async function start(){const server=app.listen(Number(process.env.PORT||3010),process.env.HOST||(process.env.NODE_ENV==='production'?'0.0.0.0':'127.0.0.1'),()=>console.log('Brisoft Shop local pronto. WhatsApp e integrações externas desativados.'));for(const signal of ['SIGINT','SIGTERM'])process.on(signal,()=>server.close(()=>process.exit(0)))}
+async function start(){cloud.start();const server=app.listen(Number(process.env.PORT||3010),process.env.HOST||(process.env.NODE_ENV==='production'?'0.0.0.0':'127.0.0.1'),()=>console.log('Brisoft Shop local pronto. Integrações conforme configuração privada do servidor.'));for(const signal of ['SIGINT','SIGTERM'])process.on(signal,()=>server.close(()=>process.exit(0)))}
 start().catch(error=>{console.error(error);process.exit(1)});
-
