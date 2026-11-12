@@ -1,0 +1,51 @@
+const {createUsersRouter}=require('../src/routes/users');
+const test=require('node:test'),assert=require('node:assert/strict'),express=require('express');
+const {createShopService}=require('../src/services/shop.service');
+const {createShopAuth}=require('../src/services/shop-auth.service');
+const {createShopRouter}=require('../src/routes/shop');
+test('HTTP: atendente recebe somente a fila autorizada e não acessa gestão, dados de outra empresa ou sessão revogada',async()=>{
+ const service=createShopService({allowMemory:true}),owner={id:'http-owner',role:'Administrador',email:'owner@example.test'},foreign={id:'http-foreign',role:'Administrador'};
+ await service.createCompany(owner,{name:'Mercado HTTP',slug:'mercado-http'});await service.createCompany(foreign,{name:'Outra empresa',slug:'outra-empresa'});
+ const counter=await service.saveDepartment(owner,{name:'Balcão',description:'',active:true}),butcher=await service.saveDepartment(owner,{name:'Açougue',description:'',active:true});
+ const staff=await service.saveUser(owner,{name:'Atendente Balcão',email:'balcao@example.test',role:'Atendente',department_ids:[counter.id],is_active:true,password:'Senha longa local 2026'});
+ const admin=await service.saveUser(owner,{name:'Administrador',email:'admin@example.test',role:'Administrador',department_ids:[],is_active:true,password:'Senha longa local 2026'});
+ await service.save(owner,{name:'Arroz',sku:'001',price_cents:2500,availability:'AVAILABLE'});
+ await service.updateCompany(owner,{name:'Mercado HTTP',description:'Configuração reservada',address:'',phone:'',opening_hours:''});
+ const chat=await service.chat(owner,{message:'Arroz'});let current=await service.transfer(owner,chat.conversation.id,{department_id:counter.id,version:chat.conversation.version});
+ const otherChat=await service.chat(foreign,{message:'Olá'});
+ const auth=createShopAuth({service,secret:'http-test-secret-of-at-least-thirty-two-characters',bootstrapPassword:''});
+ const staffLogin=await auth.login({company:'mercado-http',email:staff.email,password:'Senha longa local 2026'}),adminLogin=await auth.login({email:admin.email,password:'Senha longa local 2026'});
+ assert.equal('description' in staffLogin.company,false);
+ const app=express();app.use(express.json());app.use('/shop',createShopRouter({service,auth}));app.use('/users',createUsersRouter({service,auth}));
+ const server=await new Promise(resolve=>{const instance=app.listen(0,'127.0.0.1',()=>resolve(instance));});
+ const base='http://127.0.0.1:'+server.address().port+'/shop';
+ const request=(path,token=staffLogin.token,method='GET',body)=>fetch((path.startsWith('/users')?base.replace(/\/shop$/,''):base)+path,{method,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});
+ try{
+  assert.equal((await fetch(base+'/workspace')).status,401);
+  const workspace=await (await request('/workspace')).json();assert.equal(workspace.conversations.length,1);assert.deepEqual(workspace.products,[]);assert.deepEqual(workspace.history,[]);assert.deepEqual(workspace.imports,[]);assert.equal('description' in workspace.company,false);
+  assert.equal('description' in (await (await request('/context')).json()).company,false);
+  for(const url of ['/products','/users','/history'])assert.equal((await request(url)).status,403);
+  assert.equal((await request('/products',staffLogin.token,'POST',{name:'Teste',sku:'P',price_cents:100,availability:'AVAILABLE'})).status,403);
+  assert.equal((await request('/conversations/'+otherChat.conversation.id)).status,404);
+  const adminUsers=await (await request('/users',adminLogin.token)).json();assert.equal(JSON.stringify(adminUsers).includes('password_hash'),false);
+  // Exercise the restored Desk API with the original form fields and roles.
+  const form={name:'Supervisora',email:'supervisora@example.test',role:'Supervisor',department_ids:[counter.id],department_id:counter.id,cargo:'Gerente do balcão',phone:'11999990000',avatar_url:'',is_active:true,password:'Senha longa local 2026'};
+  const created=await request('/users',adminLogin.token,'POST',form);assert.equal(created.status,201);
+  const createdUser=(await created.json()).user;assert.equal(createdUser.cargo,form.cargo);assert.equal(createdUser.phone,form.phone);assert.equal('password_hash' in createdUser,false);
+  const supervisorLogin=await auth.login({email:form.email,password:form.password});
+  assert.equal((await request('/users',supervisorLogin.token)).status,403);
+  assert.equal((await (await request('/workspace',supervisorLogin.token)).json()).conversations.length,1);
+  const changed=await request('/users/'+createdUser.id,adminLogin.token,'PUT',{...form,password:'',role:'Analista',version:createdUser.version});assert.equal(changed.status,200);
+  const changedUser=(await changed.json()).user;assert.equal(changedUser.role,'Analista');assert.equal(changedUser.department_ids[0],counter.id);
+  assert.equal((await request('/workspace',supervisorLogin.token)).status,401);
+  const analystLogin=await auth.login({email:form.email,password:form.password});
+  assert.equal((await (await request('/workspace',analystLogin.token)).json()).conversations.length,1);
+  assert.equal((await request('/users/'+createdUser.id,adminLogin.token,'DELETE',{version:createdUser.version})).status,409);
+  assert.equal((await request('/users/'+createdUser.id,adminLogin.token,'DELETE',{version:changedUser.version})).status,200);
+  assert.equal((await request('/workspace',analystLogin.token)).status,401);
+  const moved=await request('/conversations/'+current.id+'/transfer',staffLogin.token,'POST',{department_id:butcher.id,version:current.version,reason:'Cliente procura o açougue'});assert.equal(moved.status,200);const movedData=await moved.json();assert.equal(movedData.conversation,null);assert.equal(movedData.department_name,'Açougue');
+  assert.equal((await request('/conversations/'+current.id)).status,404);assert.equal((await (await request('/workspace')).json()).conversations.length,0);
+  await service.saveUser(owner,{name:staff.name,email:staff.email,role:'Atendente',department_ids:[counter.id],is_active:false,password:'',version:staff.version},staff.id);
+  assert.equal((await request('/workspace')).status,401);
+ }finally{server.closeAllConnections();await new Promise(resolve=>server.close(resolve));}
+});

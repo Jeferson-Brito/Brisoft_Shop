@@ -1,0 +1,65 @@
+/* ==========================================================================
+   COMPONENTS - BADGES, TAGS & AVATARS
+   ========================================================================== */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Department Badges */
+.badge-financeiro { background-color: var(--dept-financeiro-bg); color: var(--dept-financeiro-text); }
+.badge-comercial { background-color: var(--dept-comercial-bg); color: var(--dept-comercial-text); }
+.badge-operacional { background-color: var(--dept-operacional-bg); color: var(--dept-operacional-text); }
+.badge-suporte { background-color: var(--dept-suporte-bg); color: var(--dept-suporte-text); }
+.badge-rh { background-color: #fee2e2; color: #b91c1c; }
+
+/* Status Badges */
+.badge-ativo { background-color: var(--status-active-bg); color: var(--status-active-text); }
+.badge-inativo { background-color: var(--status-inactive-bg); color: var(--status-inactive-text); }
+.badge-finalizado { background-color: var(--status-finished-bg); color: var(--status-finished-text); }
+.badge-andamento { background-color: var(--status-active-bg); color: var(--status-active-text); }
+
+/* Segment Badges */
+.badge-corp { background-color: var(--seg-corp-bg); color: var(--seg-corp-text); }
+.badge-peq { background-color: var(--seg-peq-bg); color: var(--seg-peq-text); }
+.badge-med { background-color: var(--seg-med-bg); color: var(--seg-med-text); }
+
+/* Channel Badges */
+.badge-whatsapp {
+  background-color: #ecfdf5;
+  color: #10b981;
+  border: 1px solid #a7f3d0;
+  font-weight: 600;
+}
+
+/* Tags */
+.tag-pill {
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.tag-blue { background-color: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+.tag-purple { background-color: #faf5ff; color: #9333ea; border: 1px solid #e9d5ff; }
+
+/* Initial Avatars */
+.initial-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 11.5px;
+  flex-shrink: 0;
+}

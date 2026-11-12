@@ -1,0 +1,66 @@
+/*
+ * Hierarquia tipográfica global.
+ * Reduz o peso visual sem enfraquecer KPIs, alertas e ações importantes.
+ */
+
+body {
+  color: var(--text-main, #0f172a);
+  letter-spacing: -0.004em;
+  text-rendering: optimizeLegibility;
+}
+
+:where(.page-title, .view-title, .section-title, .panel-title, .card-title,
+  .modal-title, .settings-section-heading, .queue-header-title,
+  .dashboard-card-title, .contact-profile-name) {
+  font-weight: 600 !important;
+  letter-spacing: -0.015em;
+}
+
+:where(.page-subtitle, .view-subtitle, .section-subtitle, .card-subtitle,
+  .settings-nav-desc, .form-help, .helper-text, .empty-description) {
+  color: var(--text-muted, #64748b);
+  font-weight: 400 !important;
+}
+
+:where(.data-table, .users-table, .contacts-table, .history-table) th {
+  color: #64748b;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em;
+}
+
+:where(.data-table, .users-table, .contacts-table, .history-table) td {
+  font-weight: 400;
+}
+
+:where(.data-table, .users-table, .contacts-table, .history-table) td strong,
+:where(.contact-cell-name, .agent-cell strong, .user-cell-name) {
+  font-weight: 600 !important;
+}
+
+:where(label, .field-label, .form-label, .filter-label) {
+  font-weight: 500;
+}
+
+:where(input, select, textarea) {
+  font-weight: 400;
+}
+
+:where(.btn-primary, .btn-secondary, .btn-ghost, .btn-danger, .btn-icon,
+  .tab-btn, .nav-tab, .filter-chip) {
+  font-weight: 600;
+}
+
+:where(.badge, .status-badge, .role-badge, .department-badge, .channel-badge,
+  .type-badge, .pill) {
+  font-weight: 500 !important;
+  letter-spacing: 0;
+}
+
+:where(.eyebrow, .overline, .table-eyebrow) {
+  font-weight: 600 !important;
+  letter-spacing: 0.035em !important;
+}
+
+:where(.muted, .text-muted, small) {
+  font-weight: 400;
+}

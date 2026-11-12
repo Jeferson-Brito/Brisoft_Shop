@@ -1,0 +1,42 @@
+services:
+  - type: web
+    name: brisoft-shop
+    runtime: node
+    plan: free
+    autoDeployTrigger: "off"
+    healthCheckPath: /api/health
+    buildCommand: npm ci --include=dev --prefix client && npm run build --prefix client && (npm ci --omit=dev --prefix server || (sleep 3 && npm ci --omit=dev --prefix server) || npm ci --omit=dev --prefix server --ignore-scripts)
+    startCommand: npm start --prefix server
+    envVars:
+      - key: NODE_VERSION
+        value: 24.19.0
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: BOOTSTRAP_ADMIN_EMAIL
+        sync: false
+      - key: BOOTSTRAP_ADMIN_PASSWORD
+        sync: false
+      - key: CLOUD_STORAGE_ENABLED
+        value: "false"
+      - key: SHOP_DEMO_MODE
+        value: "false"
+      - key: SUPABASE_MEDIA_BUCKET
+        value: chat-media
+      - key: SUPABASE_SESSION_BUCKET
+        value: whatsapp-sessions
+      - key: WHATSAPP_AUTO_RECONNECT
+        value: "false"
+      - key: WHATSAPP_MESSAGE_CONCURRENCY
+        value: "10"
+      - key: WHATSAPP_MAX_PENDING_MESSAGES
+        value: "10000"
+      - key: WHATSAPP_MAX_MEDIA_MB
+        value: "25"

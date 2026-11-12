@@ -1,0 +1,36 @@
+/* ==========================================================================
+   GRUPO COMBATE - CENTRAL DE ATENDIMENTO
+   Master Stylesheet (Imports all Modular Subsystems)
+   ========================================================================== */
+
+/* 1. Base Layer */
+@import "base/variables.css";
+@import "base/reset.css";
+
+/* 2. Layout Structure */
+@import "layout/sidebar.css";
+@import "layout/topbar.css";
+@import "layout/container.css";
+
+/* 3. Global Components */
+@import "components/buttons.css";
+@import "components/badges.css";
+@import "components/cards.css";
+@import "components/tables.css";
+@import "components/modals.css";
+
+/* 4. Screen Views */
+@import "views/dashboard.css";
+@import "views/atendimentos.css";
+@import "views/historico.css";
+@import "views/clientes.css";
+@import "views/mensagens_rapidas.css";
+@import "views/avaliacoes.css";
+@import "views/configuracoes.css";
+@import "views/login.css";
+
+/* 5. Unified clean product theme */
+@import "theme-clean.css";
+
+/* 6. Responsive Breakpoints (last — overrides desktop defaults) */
+@import "base/responsive.css";

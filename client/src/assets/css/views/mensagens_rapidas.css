@@ -1,0 +1,8 @@
+/* ==========================================================================
+   VIEW - MENSAGENS RÁPIDAS
+   ========================================================================== */
+
+/* Quick Messages specific adjustments */
+#view-mensagens_rapidas .data-table td {
+  padding: 10px 12px;
+}

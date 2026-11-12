@@ -1,0 +1,593 @@
+/* ==========================================================================
+   BRISOFT SHOP - TELA DE LOGIN SPLIT-SCREEN (SAAS PREMIUM)
+   Layout dividido: Painel Esmeralda com Branding + Formulário de Acesso
+   ========================================================================== */
+
+.login-split-page {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  overflow: hidden;
+  background-color: #ffffff;
+  z-index: 9999;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   1. COLUNA DA ESQUERDA: PAINEL DE BRANDING & MARKETING
+   ═══════════════════════════════════════════════════════════════════════════ */
+.login-brand-panel {
+  position: relative;
+  width: 50%;
+  min-width: 50%;
+  max-width: 50%;
+  height: 100%;
+  background: linear-gradient(150deg, #053c2e 0%, #032a1f 45%, #011a13 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 32px 48px 24px;
+  box-sizing: border-box;
+  overflow: hidden;
+  color: #ffffff;
+  user-select: none;
+}
+
+/* Camada de fundo 100% fixa que nunca rola */
+.brand-fixed-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Efeito de Ondas e Malha Abstrata 3D ao Fundo */
+.brand-mesh-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 55% at 85% 75%, rgba(16, 185, 129, 0.28) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 45% at 15% 20%, rgba(52, 211, 153, 0.18) 0%, transparent 60%),
+    radial-gradient(circle at 50% 50%, rgba(5, 150, 105, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.brand-curves-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 900' fill='none' preserveAspectRatio='xMidYMid slice'%3E%3Cpath d='M-100 700 C 300 600, 500 850, 900 650 C 1200 500, 1400 750, 1600 600' stroke='rgba(52,211,153,0.14)' stroke-width='40' stroke-linecap='round' fill='none' filter='blur(20px)'/%3E%3Cpath d='M-50 450 C 250 350, 600 580, 1000 400 C 1300 270, 1450 500, 1650 380' stroke='rgba(16,185,129,0.12)' stroke-width='60' stroke-linecap='round' fill='none' filter='blur(30px)'/%3E%3Cpath d='M0 250 C 400 150, 700 380, 1100 220 C 1350 120, 1500 320, 1700 200' stroke='rgba(110,231,183,0.08)' stroke-width='80' stroke-linecap='round' fill='none' filter='blur(40px)'/%3E%3C/svg%3E");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.brand-particles-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+  background-size: 32px 32px;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+.brand-panel-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+  max-width: 500px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.brand-panel-content::-webkit-scrollbar {
+  display: none;
+}
+
+/* Header com Logo Oficial da Brisoft */
+.brand-header-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.brand-logo-img {
+  height: 44px;
+  max-width: 220px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.25));
+}
+
+.mobile-logo-img {
+  height: 44px;
+  max-width: 210px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Área Central do Hero */
+.brand-hero-section {
+  margin: auto 0;
+  padding: 10px 0;
+}
+
+/* Título de Destaque */
+.brand-headline {
+  font-size: 34px;
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #ffffff;
+  margin: 0 0 12px;
+}
+
+.headline-emerald {
+  display: block;
+  background: linear-gradient(90deg, #6ee7b7 0%, #34d399 50%, #10b981 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 8px rgba(16, 185, 129, 0.2));
+}
+
+.brand-description {
+  font-size: 13.5px;
+  line-height: 1.48;
+  color: rgba(241, 245, 249, 0.82);
+  margin: 0 0 20px;
+  max-width: 460px;
+}
+
+/* Lista de Recursos (Features) */
+.brand-features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.feature-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: rgba(16, 185, 129, 0.14);
+  border: 1px solid rgba(52, 211, 153, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #34d399;
+  font-size: 17px;
+  flex-shrink: 0;
+}
+
+.feature-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 1px;
+}
+
+.feature-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.feature-subtitle {
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: rgba(241, 245, 249, 0.65);
+}
+
+/* Rodapé da Marca */
+.brand-panel-footer {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.45);
+  flex-shrink: 0;
+  padding-top: 6px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   2. COLUNA DA DIREITA: FORMULÁRIO DE AUTENTICAÇÃO
+   ═══════════════════════════════════════════════════════════════════════════ */
+.login-auth-panel {
+  position: relative;
+  width: 50%;
+  min-width: 50%;
+  max-width: 50%;
+  height: 100%;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 48px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.mobile-brand-header {
+  display: none;
+  margin-bottom: 28px;
+}
+
+.auth-form-card {
+  width: 100%;
+  max-width: 410px;
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-card-title {
+  font-size: 30px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.03em;
+  margin: 0 0 6px;
+}
+
+.auth-card-subtitle {
+  font-size: 13.5px;
+  color: #64748b;
+  margin: 0 0 28px;
+  line-height: 1.45;
+}
+
+/* Estrutura do Formulário */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+}
+
+.form-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-field-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #334155;
+  letter-spacing: 0.01em;
+}
+
+.form-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-icon-box {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  font-size: 17px;
+  pointer-events: none;
+  transition: color 0.15s ease;
+}
+
+.form-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 40px 0 40px;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 13.5px;
+  color: #0f172a;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: all 0.15s ease;
+  outline: none;
+}
+
+.form-input::placeholder {
+  color: #94a3b8;
+}
+
+.form-input:hover {
+  border-color: #94a3b8;
+}
+
+.form-input:focus {
+  border-color: #059669;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.12);
+}
+
+.form-input-wrap:focus-within .input-icon-box {
+  color: #059669;
+}
+
+/* Botão de Exibir/Ocultar Senha */
+.pwd-toggle-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  padding: 6px;
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  border-radius: 6px;
+  transition: color 0.15s ease;
+}
+
+.pwd-toggle-btn:hover {
+  color: #0f172a;
+}
+
+/* Linha de Opções: Lembrar de mim e Esqueci senha */
+.form-options-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2px;
+}
+
+.remember-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.remember-checkbox {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.custom-checkbox-box {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  border: 1.5px solid #cbd5e1;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 13px;
+  transition: all 0.15s ease;
+}
+
+.remember-checkbox:checked + .custom-checkbox-box {
+  background-color: #059669;
+  border-color: #059669;
+}
+
+.remember-checkbox:focus + .custom-checkbox-box {
+  box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.2);
+}
+
+.remember-text {
+  font-size: 13px;
+  color: #475569;
+  font-weight: 500;
+}
+
+.forgot-pwd-link {
+  background: transparent;
+  border: none;
+  color: #059669;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s ease, text-decoration 0.15s ease;
+}
+
+.forgot-pwd-link:hover {
+  color: #047857;
+  text-decoration: underline;
+}
+
+/* Banner de Erro */
+.auth-error-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #b91c1c;
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.auth-error-banner i {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.auth-error-slide-enter-active,
+.auth-error-slide-leave-active {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.auth-error-slide-enter-from,
+.auth-error-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+/* Banner de Inatividade */
+.auth-inactivity-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  color: #166534;
+  font-size: 12.5px;
+  line-height: 1.4;
+  margin-bottom: 16px;
+}
+
+.auth-inactivity-banner i {
+  font-size: 18px;
+  color: #059669;
+  flex-shrink: 0;
+}
+
+/* Botão Entrar */
+.btn-login-submit {
+  width: 100%;
+  height: 46px;
+  background: #059669;
+  border: none;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 6px;
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.25);
+  transition: all 0.15s ease;
+  outline: none;
+}
+
+.btn-login-submit:hover:not(:disabled) {
+  background: #047857;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-login-submit:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.2);
+}
+
+.btn-login-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.login-btn-inner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.login-btn-inner i {
+  font-size: 16px;
+}
+
+.login-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Rodapé com Link de Suporte */
+.auth-card-footer {
+  text-align: center;
+  margin-top: 26px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.support-link {
+  background: transparent;
+  border: none;
+  color: #059669;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s ease;
+}
+
+.support-link:hover {
+  color: #047857;
+  text-decoration: underline;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   3. RESPONSIVIDADE (TABLETS E SMARTPHONES)
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 960px) {
+  .login-brand-panel {
+    display: none;
+  }
+
+  .login-auth-panel {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    padding: 32px 24px;
+  }
+
+  .mobile-brand-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 24px;
+  }
+
+  .mobile-logo-img {
+    height: 52px;
+    max-width: 240px;
+    width: auto;
+    object-fit: contain;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-card-title {
+    font-size: 25px;
+  }
+
+  .form-options-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}

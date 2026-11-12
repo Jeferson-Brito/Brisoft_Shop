@@ -1,0 +1,13 @@
+{
+  "name": "brisoft-shop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Brisoft Shop - catálogo e atendimento para pequenos comércios",
+  "scripts": {
+    "build": "npm ci --include=dev --prefix client && npm run build --prefix client && (npm ci --omit=dev --prefix server || (sleep 3 && npm ci --omit=dev --prefix server) || npm ci --omit=dev --prefix server --ignore-scripts)",
+    "start": "npm start --prefix server"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  }
+}

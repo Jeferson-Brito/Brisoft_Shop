@@ -1,0 +1,50 @@
+const test=require('node:test');
+const assert=require('node:assert/strict');
+const {createShopService,productInput}=require('../src/services/shop.service');
+const a={id:'shop-a',email:'a@example.test',role:'Administrador'},b={id:'shop-b',email:'b@example.test',role:'Administrador'};
+const item={name:'Arroz 5 kg',sku:'ARR001',category:'Alimentos',unit:'UN',barcode:null,price_cents:2490,availability:'AVAILABLE'};
+test('Shop: catálogo e histórico pertencem à loja vinculada, sem confiar no corpo ou token de empresa',async()=>{
+  const service=createShopService({allowMemory:true});
+  assert.equal((await service.context(a)).company,null);
+  await assert.rejects(service.list(a),e=>e.status===403);
+  const ca=await service.createCompany(a,{name:'Mercado A',slug:'mercado-a'});
+  const cb=await service.createCompany(b,{name:'Mercado B',slug:'mercado-b'});
+  const p=await service.save(a,item);
+  assert.equal(p.company_id,ca.id);
+  assert.deepEqual(await service.list(b),[]);
+  await assert.rejects(service.save(b,{...item,version:1},p.id),e=>e.status===404);
+  await assert.rejects(service.save(a,{...item,company_id:cb.id}),e=>e.status===400);
+  assert.equal((await service.list({...a,company_id:cb.id}))[0].id,p.id);
+  assert.equal((await service.history(b)).length,1);
+  const duplicateCode=await service.save(b,item);assert.equal(duplicateCode.company_id,cb.id);
+  await assert.rejects(service.save(a,item),e=>e.status===409);
+  await assert.rejects(service.createCompany(a,{name:'Outra loja',slug:'outra-loja'}),e=>e.status===409);
+});
+test('Shop: conflito de edição preserva o preço e o histórico corretos',async()=>{
+  const service=createShopService({allowMemory:true});
+  await service.createCompany(a,{name:'Mercado',slug:'mercado'});
+  const p=await service.save(a,item);
+  const updated=await service.save(a,{...item,price_cents:2590,availability:'OUT_OF_STOCK',version:1},p.id);
+  assert.equal(updated.version,2);
+  await assert.rejects(service.save(a,{...item,version:1},p.id),e=>e.status===409);
+  const history=await service.history(a);
+  assert.equal(history.length,3);assert.equal(history[0].before.price_cents,2490);assert.equal(history[0].after.price_cents,2590);
+  assert.equal(history[0].after.availability,'OUT_OF_STOCK');
+  history[0].after.price_cents=0;
+  assert.equal((await service.history(a))[0].after.price_cents,2590);
+  const current=(await service.list(a))[0];current.price_cents=0;
+  assert.equal((await service.list(a))[0].price_cents,2590);
+});
+test('Shop: rejeita dados inválidos e nunca ativa memória implicitamente',async()=>{
+  for(const value of [-1,1.5,NaN,100000001])assert.throws(()=>productInput({...item,price_cents:value}),e=>e.status===400);
+  assert.throws(()=>productInput({...item,availability:'IN_STOCK'}),e=>e.status===400);
+  assert.throws(()=>productInput({...item,sku:''}),e=>e.status===400);
+  assert.throws(()=>productInput({...item,version:0},true),e=>e.status===400);
+  const service=createShopService();await assert.rejects(service.context(a),e=>e.status===503);
+  await assert.rejects(service.context(null),e=>e.status===401);
+});
+test('Shop: banco indisponível não degrada para demonstração em memória',async()=>{
+  const failingDb={from(){return {select(){return this},eq(){return this},async maybeSingle(){return {error:{code:'42P01'}}}}}};
+  const service=createShopService({database:failingDb,allowMemory:true});
+  await assert.rejects(service.list(a),e=>e.status===503);
+});

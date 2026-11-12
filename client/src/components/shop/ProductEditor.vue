@@ -1,0 +1,14 @@
+<template><Teleport to="body"><div class="shop-backdrop" @click.self="!busy&&close()"><section class="shop-modal" role="dialog" aria-modal="true" aria-labelledby="product-heading" @keydown.esc="!busy&&close()"><header><div><span class="shop-eyebrow">CATÁLOGO DA LOJA</span><h2 id="product-heading">{{product?'Editar produto':'Novo produto'}}</h2></div><button aria-label="Fechar" :disabled="busy" @click="close"><i class="ri-close-line"></i></button></header><div v-if="error" class="shop-alert error" role="alert">{{error}}</div><form @submit.prevent="save"><fieldset :disabled="busy"><label>Nome do produto<input ref="first" v-model="draft.name" required minlength="2" maxlength="180"/></label><div class="shop-form-grid"><label>Código interno<input v-model="draft.sku" required maxlength="80"/></label><label>Código de barras<input v-model="draft.barcode" maxlength="60"/></label><label>Categoria<input v-model="draft.category" maxlength="80"/></label><label>Unidade<input v-model="draft.unit" required maxlength="12"/></label><label>Preço de venda (R$)<input v-model="price" inputmode="decimal" placeholder="Deixe vazio para definir depois"/></label><label>Disponibilidade<select v-model="draft.availability"><option v-for="(label,value) in availability" :key="value" :value="value">{{label}}</option></select></label></div><p class="shop-form-note">O preço e a disponibilidade são informados pela loja. Marque “Não trabalha mais” para retirar um item da oferta preservando o histórico.</p><div class="shop-modal-actions"><button type="button" class="shop-secondary" @click="close">Cancelar</button><button class="shop-primary">{{busy?'Salvando…':'Salvar produto'}}<i class="ri-check-line"></i></button></div></fieldset></form></section></div></Teleport></template>
+<script setup>
+import { ref,onMounted,onBeforeUnmount } from 'vue'
+import { shopApi } from '@/api/shop.api'
+import { availability,priceCents,apiError } from '@/utils/shop'
+const props=defineProps({product:{type:Object,default:null}}),emit=defineEmits(['close','saved'])
+const p=props.product,draft=ref(p?{name:p.name,sku:p.sku,category:p.category,unit:p.unit,barcode:p.barcode||'',availability:p.availability}:{name:'',sku:'',category:'',unit:'UN',barcode:'',availability:'OUT_OF_STOCK'})
+const price=ref(p&&p.price_cents!=null?(p.price_cents/100).toFixed(2).replace('.',','):''),error=ref(''),busy=ref(false),first=ref(null)
+let priorFocus=null
+onMounted(()=>{priorFocus=document.activeElement;first.value?.focus()})
+onBeforeUnmount(()=>priorFocus?.focus())
+function close(){if(!busy.value)emit('close')}
+async function save(){error.value='';busy.value=true;try{const value={...draft.value,price_cents:price.value.trim()?priceCents(price.value):null,...(p?{version:p.version}:{})};await shopApi.save(value,p?.id);emit('saved')}catch(e){error.value=e.response?apiError(e):e.message}finally{busy.value=false}}
+</script>

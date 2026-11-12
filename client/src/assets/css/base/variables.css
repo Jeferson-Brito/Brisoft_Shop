@@ -1,0 +1,81 @@
+/* ==========================================================================
+   BRISOFT SHOP - DESIGN TOKENS & VARIABLES
+   ========================================================================== */
+
+:root {
+  /* Brand Identity */
+  --brand-primary: #059669;
+  --brand-primary-hover: #047857;
+  --brand-red: #e11d48;
+  --brand-dark: #172033;
+  
+  /* Layout & Backgrounds */
+  --bg-app: #f8fafc;
+  --bg-sidebar: #ffffff;
+  --bg-sidebar-active: #ffffff;
+  --bg-topbar: #ffffff;
+  --bg-card: #ffffff;
+  --bg-chat-bubble-in: #ffffff;
+  --bg-chat-bubble-out: #e6f5eb;
+  
+  /* Text Colors */
+  --text-main: #172033;
+  --text-muted: #667085;
+  --text-light: #98a2b3;
+  --text-sidebar: #667085;
+  --text-sidebar-active: #059669;
+  
+  /* Borders & Dividers */
+  --border-color: #e2e8f0;
+  --border-subtle: #edf2f7;
+  
+  /* Departments Badge Colors */
+  --dept-financeiro-bg: #ecfdf5;
+  --dept-financeiro-text: #059669;
+  --dept-comercial-bg: #f5f3ff;
+  --dept-comercial-text: #7c3aed;
+  --dept-operacional-bg: #ecfdf5;
+  --dept-operacional-text: #059669;
+  --dept-suporte-bg: #fff7ed;
+  --dept-suporte-text: #ea580c;
+  
+  /* Status Colors */
+  --status-active-bg: #ecfdf5;
+  --status-active-text: #168a52;
+  --status-inactive-bg: #f1f5f9;
+  --status-inactive-text: #64748b;
+  --status-finished-bg: #ecfdf5;
+  --status-finished-text: #059669;
+  
+  /* Customer Segment Badges */
+  --seg-corp-bg: #ecfdf5;
+  --seg-corp-text: #059669;
+  --seg-peq-bg: #f8fafc;
+  --seg-peq-text: #475569;
+  --seg-med-bg: #fefce8;
+  --seg-med-text: #854d0e;
+
+  /* Semantic Alerts */
+  --success: #168a52;
+  --warning: #b7791f;
+  --danger: #d92d20;
+
+  /* Dimensions & Spacings */
+  --sidebar-width: 66px;
+  --sidebar-width-collapsed: 66px;
+  --topbar-height: 58px;
+  
+  /* Shapes & Shadows */
+  --radius-sm: 6px;
+  --radius-md: 7px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-full: 9999px;
+  
+  --shadow-xs: 0 1px 2px 0 rgba(16, 24, 40, 0.05);
+  --shadow-sm: 0 1px 3px rgba(16, 24, 40, 0.06);
+  --shadow-md: 0 4px 12px rgba(16, 24, 40, 0.07);
+  --shadow-lg: 0 12px 32px rgba(16, 24, 40, 0.12);
+
+  --transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}

@@ -1,0 +1,10 @@
+const express=require('express');
+const {loginRateLimit,clearLoginAttempts}=require('../middleware/auth.middleware');
+const {shopAuth}=require('../services/shop-auth.service');
+const router=express.Router();
+router.post('/auth/login',loginRateLimit,async(req,res)=>{try{const result=await shopAuth.login(req.body);clearLoginAttempts(req);res.json({success:true,...result});}catch(error){res.status(error.status||500).json({success:false,error:error.status?error.message:'Não foi possível entrar.'});}});
+router.post('/auth/logout',shopAuth.requireAuth,(req,res)=>{shopAuth.logout(req.shopSessionId);res.json({success:true});});
+router.get('/auth/me',shopAuth.requireAuth,(req,res)=>res.json({success:true,user:req.user}));
+router.use('/users',require('./users'));
+router.use('/shop',require('./shop'));
+module.exports=router;

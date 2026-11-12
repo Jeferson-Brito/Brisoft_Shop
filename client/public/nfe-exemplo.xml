@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Documento sintético: não tem validade fiscal, assinatura ou autorização SEFAZ. -->
+<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00">
+  <NFe><infNFe Id="NFe11261112345678000199550010000000011000000019" versao="4.00">
+    <emit><CNPJ>12345678000199</CNPJ><xNome>Distribuidora Exemplo - TESTE</xNome></emit>
+    <det nItem="1"><prod><cProd>0001</cProd><cEAN>SEM GTIN</cEAN><xProd>Açúcar cristal · 1 kg</xProd><uCom>UN</uCom><qCom>24.0000</qCom><vUnCom>3.100000</vUnCom></prod></det>
+    <det nItem="2"><prod><cProd>0002</cProd><cEAN>SEM GTIN</cEAN><xProd>Macarrão espaguete · 500 g</xProd><uCom>UN</uCom><qCom>12.0000</qCom><vUnCom>2.800000</vUnCom></prod></det>
+  </infNFe></NFe>
+</nfeProc>

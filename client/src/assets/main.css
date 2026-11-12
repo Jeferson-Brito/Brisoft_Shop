@@ -1,0 +1,42 @@
+/* Brisoft Shop — Design System Entry Point
+   Importa todos os módulos CSS existentes na ordem correta */
+
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Base */
+@import './css/base/reset.css';
+@import './css/base/variables.css';
+
+/* Layout */
+@import './css/layout/container.css';
+@import './css/layout/sidebar.css';
+@import './css/layout/topbar.css';
+
+/* Components */
+@import './css/components/buttons.css';
+@import './css/components/badges.css';
+@import './css/components/cards.css';
+@import './css/components/modals.css';
+@import './css/components/tables.css';
+
+/* Views */
+@import './css/views/login.css';
+@import './css/views/dashboard.css';
+@import './css/views/atendimentos.css';
+@import './css/views/historico.css';
+@import './css/views/avaliacoes.css';
+@import './css/views/clientes.css';
+@import './css/views/configuracoes.css';
+@import './css/views/configuracoes-clean.css';
+@import './css/views/mensagens_rapidas.css';
+@import './css/views/painel-tv.css';
+@import './css/views/painel-tv-legibility.css';
+
+/* Hierarquia tipográfica compartilhada por todas as telas */
+@import './css/base/typography.css';
+
+/* Responsive Overrides (must be last) */
+@import './css/base/responsive.css';
+
+/* Font Awesome via CDN — carregado no index.html */

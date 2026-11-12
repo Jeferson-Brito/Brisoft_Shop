@@ -1,0 +1,60 @@
+# Dependências do Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+server/*.log
+server/logs/
+
+# Build do frontend (gerado em runtime)
+client/dist/
+
+# Variáveis de ambiente (contém credenciais sensíveis!)
+.env
+server/.env
+
+# Dados locais gerados em runtime
+server/data/tickets.json
+server/data/*.json
+server/data/shop-local.json*
+
+# Sessão do WhatsApp (tokens de autenticação locais)
+server/src/sessions/
+server/.wwebjs_auth/
+server/.wwebjs_cache/
+server/session_auth/
+
+# Mídias recebidas em runtime (preserva apenas marcadores .gitkeep)
+server/public/media/*
+!server/public/media/.gitkeep
+server/src/public/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.suo
+*.user
+
+# Diretórios temporários
+output/
+tmp/
+
+# Ambientes, cópias e credenciais
+.env.*
+**/.env.*
+!.env.example
+!**/.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.log
+__pycache__/
+
+# Documentos privados de teste
+*.pdf
+*.xlsx
+*.csv

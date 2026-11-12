@@ -1,0 +1,567 @@
+/* ==========================================================================
+   VIEW - DESEMPENHO (AVALIAÇÕES & KPIS) — SaaS Clean Theme
+   ========================================================================== */
+
+.performance-view {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding: 16px 20px;
+  background: var(--bg-app);
+  color: var(--text-main);
+  box-sizing: border-box;
+}
+
+.performance-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 18px;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+.performance-eyebrow {
+  color: var(--brand-primary);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.performance-toolbar h2 {
+  margin: 4px 0 2px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.performance-toolbar p,
+.performance-panel-head p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 11.5px;
+}
+
+.performance-filters {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.performance-filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  color: var(--text-muted);
+  font-size: 10.5px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.performance-filters input,
+.performance-filters select {
+  min-width: 140px;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid #d7dce2;
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--text-main);
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.performance-filters input:focus,
+.performance-filters select:focus {
+  border-color: var(--brand-primary);
+}
+
+.performance-refresh {
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--brand-primary);
+  border-radius: 6px;
+  background: var(--brand-primary);
+  color: #ffffff;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s ease;
+}
+
+.performance-refresh:hover {
+  background: var(--brand-primary-hover);
+}
+
+.performance-error {
+  margin-top: 12px;
+  padding: 10px 14px;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  background: #fef2f2;
+  color: #d92d20;
+  font-size: 12px;
+}
+
+.performance-kpis {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(140px, 1fr));
+  gap: 10px;
+  margin: 14px 0;
+  transition: opacity 0.2s;
+}
+
+.performance-kpis.loading {
+  opacity: 0.55;
+}
+
+.performance-kpi-card,
+.performance-panel,
+.department-performance-card {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+.performance-kpi-card {
+  padding: 13px 14px;
+  min-width: 0;
+}
+
+.performance-kpi-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.performance-kpi-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+}
+
+.performance-kpi-card > strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+.performance-kpi-card > span:not(.performance-kpi-icon):not(.performance-comparison) {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.performance-kpi-card > small {
+  display: block;
+  margin-top: 6px;
+  color: var(--text-light);
+  font-size: 9.5px;
+}
+
+.performance-comparison {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 9.5px;
+  font-weight: 700;
+}
+
+.performance-comparison.positive {
+  color: #047857;
+  background: #ecfdf5;
+}
+
+.performance-comparison.negative {
+  color: #d92d20;
+  background: #fef2f2;
+}
+
+.performance-comparison.neutral {
+  color: #64748b;
+  background: #f1f5f9;
+}
+
+.performance-main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(290px, 0.75fr);
+  gap: 12px;
+}
+
+.performance-panel {
+  padding: 16px;
+  min-width: 0;
+}
+
+.performance-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.performance-panel-head h3 {
+  margin: 0 0 2px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.performance-legend {
+  display: flex;
+  gap: 12px;
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.performance-legend span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.performance-legend i {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+.received {
+  background: #93c5fd;
+}
+
+.completed {
+  background: var(--brand-primary);
+}
+
+.performance-chart {
+  height: 180px;
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  padding-top: 10px;
+  border-bottom: 1px solid #edf0f3;
+}
+
+.performance-chart-day {
+  flex: 1;
+  min-width: 4px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 5px;
+}
+
+.performance-bars {
+  width: 100%;
+  height: 155px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 1px;
+}
+
+.performance-bars i {
+  display: block;
+  width: min(7px, 45%);
+  min-height: 2px;
+  border-radius: 2px 2px 0 0;
+  transition: height 0.3s;
+}
+
+.performance-chart-day > span {
+  color: var(--text-light);
+  font-size: 8px;
+}
+
+.health-row {
+  margin-bottom: 12px;
+}
+
+.health-row > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.health-row strong {
+  color: var(--text-main);
+}
+
+.health-track {
+  height: 6px;
+  margin-top: 5px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: #eff6ff;
+}
+
+.health-track i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--brand-primary);
+}
+
+.health-track.green i {
+  background: #168a52;
+}
+
+.health-track.purple i {
+  background: #7c3aed;
+}
+
+.performance-facts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-top: 16px;
+}
+
+.performance-facts > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+  border-radius: 6px;
+  background: #f8fafc;
+  border: 1px solid #edf0f3;
+}
+
+.performance-facts i {
+  color: var(--brand-primary);
+  font-size: 12px;
+}
+
+.performance-facts span {
+  color: var(--text-muted);
+  font-size: 9px;
+}
+
+.performance-facts strong {
+  font-size: 11.5px;
+  color: var(--text-main);
+}
+
+.performance-table-panel {
+  margin-top: 12px;
+}
+
+.performance-count {
+  padding: 3px 7px;
+  border-radius: 4px;
+  background: #eff6ff;
+  color: var(--brand-primary);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.performance-table-wrap {
+  overflow-x: auto;
+}
+
+.performance-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.performance-table th {
+  padding: 8px 12px;
+  text-align: left;
+  color: var(--text-muted);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  border-bottom: 1px solid var(--border-color);
+  background: #f7f8fa;
+}
+
+.performance-table td {
+  padding: 10px 12px;
+  color: var(--text-main);
+  border-bottom: 1px solid #edf0f3;
+}
+
+.agent-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.agent-cell div {
+  display: flex;
+  flex-direction: column;
+}
+
+.agent-cell strong {
+  color: var(--text-main);
+  font-size: 12.5px;
+}
+
+.agent-cell small {
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.agent-avatar {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--brand-primary);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.rank-pill {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  background: #f1f5f9;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.sla-pill {
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #ecfdf5;
+  color: #047857;
+  font-weight: 700;
+  font-size: 10.5px;
+}
+
+.sla-pill.warning {
+  color: #b7791f;
+  background: #fefce8;
+}
+
+.performance-departments {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.department-performance-card {
+  padding: 14px;
+  border-top: 2px solid var(--dept-color) !important;
+}
+
+.department-performance-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.department-performance-title > i {
+  color: var(--dept-color);
+}
+
+.department-performance-title div {
+  display: flex;
+  flex-direction: column;
+}
+
+.department-performance-title small {
+  margin-top: 2px;
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.department-performance-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.department-performance-grid div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.department-performance-grid span {
+  color: var(--text-muted);
+  font-size: 9px;
+}
+
+.department-performance-grid strong {
+  font-size: 13px;
+  color: var(--text-main);
+}
+
+.performance-empty {
+  padding: 28px !important;
+  text-align: center !important;
+  color: var(--text-muted) !important;
+  font-size: 12px;
+}
+
+.performance-footnote {
+  margin: 12px 2px 4px;
+  color: var(--text-muted);
+  font-size: 10.5px;
+}
+
+.performance-footnote i {
+  color: var(--brand-primary);
+  margin-right: 4px;
+}
+
+@media (max-width: 1250px) {
+  .performance-kpis {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 850px) {
+  .performance-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .performance-filters {
+    justify-content: flex-start;
+  }
+  .performance-main-grid {
+    grid-template-columns: 1fr;
+  }
+  .performance-kpis {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

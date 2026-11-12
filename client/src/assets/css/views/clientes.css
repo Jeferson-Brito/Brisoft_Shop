@@ -1,0 +1,30 @@
+/* ==========================================================================
+   VIEW - CLIENTES & CONTATOS
+   ========================================================================== */
+
+/* Quick Action Pill Buttons */
+.drawer-quick-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.quick-action-pill-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.quick-action-pill-btn:hover {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+}

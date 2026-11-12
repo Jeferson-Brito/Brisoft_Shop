@@ -1,0 +1,113 @@
+/* ==========================================================================
+   BRISOFT SHOP — RESPONSIVE BREAKPOINTS (Clean SaaS Standard)
+   ========================================================================== */
+
+/* Tablet (769px - 1024px) */
+@media (max-width: 1024px) {
+  .inbox-nav-column {
+    display: none;
+  }
+  .details-column {
+    display: none;
+  }
+  .dash-middle-grid,
+  .dash-lower-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .kpi-row-6 {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* Mobile (<= 768px) */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: -260px !important;
+    height: 100vh !important;
+    width: 220px !important;
+    z-index: 1000 !important;
+    transition: left 0.25s ease !important;
+  }
+
+  .sidebar.mobile-open {
+    left: 0 !important;
+  }
+
+  .inbox-nav-column {
+    display: none !important;
+  }
+
+  .details-column {
+    display: none !important;
+  }
+
+  /* Em mobile, alterna entre a fila e o chat */
+  .atendimentos-main-grid {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .atendimentos-main-grid .queue-column,
+  .atendimentos-main-grid .chat-column {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+  }
+
+  .atendimentos-main-grid:not(.mobile-chat-active) .queue-column {
+    display: flex !important;
+    z-index: 2 !important;
+  }
+
+  .atendimentos-main-grid:not(.mobile-chat-active) .chat-column {
+    display: none !important;
+  }
+
+  .atendimentos-main-grid.mobile-chat-active .queue-column {
+    display: none !important;
+  }
+
+  .atendimentos-main-grid.mobile-chat-active .chat-column {
+    display: flex !important;
+    z-index: 2 !important;
+  }
+
+  .chat-back-btn {
+    display: flex !important;
+  }
+
+  .chat-header {
+    padding: 0 10px !important;
+    gap: 6px;
+    justify-content: space-between !important;
+  }
+
+  .chat-header-left {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    min-width: 0 !important;
+    flex: 1 !important;
+  }
+
+  .handling-channel-badge,
+  .employee-contact-badge {
+    display: none !important;
+  }
+
+  .contact-call-actions {
+    padding-right: 6px;
+    margin-right: 0;
+  }
+}
