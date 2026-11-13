@@ -78,7 +78,7 @@ test('WhatsApp: mapa explícito de destinatário, status de falha/entrega e reen
  assert.equal(service.applyWhatsAppStatus(company.id,{id:'external-1',status:'sent'}),false);
  current=await service.conversation(owner,current.id);assert.equal(current.messages.at(-1).delivery_status,'failed');
  await assert.rejects(service.retryWhatsAppSend(other,current.id,{message_id:messageId,version:current.version}),e=>e.status===404);
- await service.retryWhatsAppSend(owner,current.id,{message_id:messageId,version:current.version});await cloud.tick();assert.equal(calls,2);
+ await service.retryWhatsAppSend(owner,current.id,{message_id:messageId,version:current.version});await cloud.tick();assert.equal(calls,2);assert.equal((await service.conversation(owner,current.id)).messages.at(-1).error_code,null);
  assert.equal(service.applyWhatsAppStatus(company.id,{id:'external-2',status:'delivered'}),true);assert.equal(service.applyWhatsAppStatus(company.id,{id:'external-2',status:'read'}),true);assert.equal(service.applyWhatsAppStatus(company.id,{id:'external-1',status:'failed',error_code:131031}),false);assert.equal(service.applyWhatsAppStatus(company.id,{id:'external-2',status:'failed',error_code:131031}),false);
  assert.equal((await service.conversation(owner,current.id)).messages.at(-1).delivery_status,'read');
 });

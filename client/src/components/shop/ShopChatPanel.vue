@@ -7,7 +7,7 @@ import EmptyChatAnimation from '@/components/atendimentos/EmptyChatAnimation.vue
 import { normalize } from '@/utils/shop'
 const props=defineProps({conversation:{type:Object,default:null},busy:{type:Boolean,default:false}}),emit=defineEmits(['send','transfer','back','close-conversation','retry-message'])
 const auth=useAuthStore(),message=ref(''),search=ref(''),showSearch=ref(false),showActions=ref(false),messagesBox=ref(null)
-const failedMessage=computed(()=>props.conversation?.messages.filter(m=>m.delivery_status==='failed').at(-1))
+const failedMessage=computed(()=>{const latest=props.conversation?.messages.filter(m=>m.role!=='customer').at(-1);return latest?.delivery_status==='failed'?latest:null})
 const deliverySummary=computed(()=>{const m=props.conversation?.messages.filter(m=>m.role!=='customer').at(-1);const labels={pending:'Envio aguardando processamento.',sending:'Enviando mensagem ao WhatsApp…',accepted:'Mensagem aceita pela API do WhatsApp.',failed:'Falha no envio da mensagem. Confira as configurações.',unknown:'Envio sem confirmação. Confira no celular antes de reenviar.',cancelled:'Resposta automática cancelada após encaminhamento à equipe.'};return m?.error_code===131031?'A Meta bloqueou a conta de teste. É necessário verificar o status no suporte da Meta.':labels[m?.delivery_status]||'Canal oficial de teste.'})
 const displayMessages=computed(()=>{
  if(!props.conversation)return []
