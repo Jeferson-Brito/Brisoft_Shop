@@ -11,6 +11,7 @@ export const shopApi = {
   confirmInvoice:(id,items)=>http.post(`/shop/imports/${id}/confirm`,{items}),
   chat:(data)=>http.post('/shop/chat',data),
   saveDepartment:(data,id)=>id?http.put(`/shop/departments/${id}`,data):http.post('/shop/departments',data),
+  retryMessage:(id,message_id,version)=>http.post(`/shop/conversations/${id}/retry-send`,{message_id,version}),
   conversation:(id)=>http.get(`/shop/conversations/${id}`),
   transfer:(id,data)=>http.post(`/shop/conversations/${id}/transfer`,data),
   reply:(id,message,version)=>http.post(`/shop/conversations/${id}/messages`,{message,version}),

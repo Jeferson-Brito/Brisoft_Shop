@@ -40,6 +40,7 @@ router.put('/departments/:id',action(async(req,res)=>res.json({success:true,depa
 router.get('/conversations/:id',action(async(req,res)=>res.json({success:true,conversation:await shopService.conversation(req.user,req.params.id)})));
 router.post('/conversations/:id/transfer',action(async(req,res)=>{const conversation=await shopService.transfer(req.user,req.params.id,req.body);res.json({success:true,department_name:conversation.department_name,conversation:shopService.canReadConversation(req.user,conversation)?conversation:null});}));
 router.post('/conversations/:id/messages',action(async(req,res)=>res.json({success:true,conversation:await shopService.reply(req.user,req.params.id,req.body)})));
+router.post('/conversations/:id/retry-send',requireAdmin,action(async(req,res)=>res.json({success:true,conversation:await shopService.retryWhatsAppSend(req.user,req.params.id,req.body)})));
 router.post('/conversations/:id/close',action(async(req,res)=>res.json({success:true,conversation:await shopService.closeConversation(req.user,req.params.id,req.body)})));
 return router;
 }

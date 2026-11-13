@@ -334,7 +334,7 @@ function createShopService({ database = null, allowMemory = false, persistencePa
       current.version++;current.updated_at=new Date().toISOString();
       return commit(()=>{conversations.set(current.id,current);return {...answer,conversation:current,provider:answer.provider||'local-catalog',disclaimer:answer.provider==='gemini'?'Interpretação pelo Gemini; preços e disponibilidade do catálogo.':'Consulta direta ao catálogo, sem chamada à LLM.'};});
     },
-    integrationStatus(companyId){return {assistant:assistant?.status(companyId)||{provider:'local-catalog',configured:false},pending:[...integrationJobs.values()].filter(j=>j.company_id===companyId&&j.status==='pending').length,failed:[...integrationJobs.values()].filter(j=>j.company_id===companyId&&['failed','unknown'].includes(j.status)).length};},
+    integrationStatus(companyId){return {assistant:assistant?.status(companyId)||{provider:'local-catalog',configured:false},pending:[...integrationJobs.values()].filter(j=>j.company_id===companyId&&j.status==='pending').length,failed:[...integrationJobs.values()].filter(j=>j.company_id===companyId&&['failed','unknown'].includes(j.status)).length,last_error:[...integrationJobs.values()].filter(j=>j.company_id===companyId&&j.error_code).at(-1)?.error_code||null};},
     ingestWhatsApp(companyId,event){
       if(database||!companies.has(companyId))throw new ShopError(503,'Loja não configurada para WhatsApp.');
       if(integrationJobs.has(event.id))return false;
@@ -371,9 +371,28 @@ function createShopService({ database = null, allowMemory = false, persistencePa
       if(message.role==='assistant'&&current.status!=='bot'&&!message.handoff){commit(()=>{job.status='cancelled';message.delivery_status='cancelled';current.version++;return true;});return null;}
       return commit(()=>{job.status='sending';message.delivery_status='sending';current.version++;return {id,company_id:job.company_id,to:current.whatsapp_to,phone_id:current.phone_id,text:message.text,last_customer_at:current.last_customer_at};});
     },
-    completeWhatsAppSend(id,{status,external_id=null}){
+    applyWhatsAppStatus(companyId,event){
+      const job=[...integrationJobs.values()].find(j=>j.company_id===companyId&&j.external_id===event.id);
+      if(!job)return false;
+      const ranks={accepted:1,sent:2,delivered:3,read:4};
+      if(!['failed','sent','delivered','read'].includes(event.status))return false;
+      if(event.status==='failed'&&['delivered','read'].includes(job.status))return false;
+      if(job.status==='failed'&&event.status!=='failed')return false;
+      if(event.status!=='failed'&&(ranks[event.status]||0)<=(ranks[job.status]||0))return false;
+      return commit(()=>{job.status=event.status;job.error_code=event.error_code||null;const current=conversations.get(job.conversation_id),message=current?.messages.find(m=>m.id===job.message_id);if(message){message.delivery_status=event.status;message.error_code=event.error_code||null;current.version++;}return true;});
+    },
+    async retryWhatsAppSend(user,id,input){
+      admin(user);const company=await adminCompanyFor(user);fieldsOnly(input,['message_id','version']);
+      const current=conversations.get(id),job=integrationJobs.get(input.message_id);
+      if(!current||current.company_id!==company.id||!job||job.company_id!==company.id||job.conversation_id!==id)throw new ShopError(404,'Envio não encontrado nesta loja.');
+      if(input.version!==current.version)throw new ShopError(409,'A conversa mudou. Atualize antes de reenviar.');
+      if(job.status!=='failed')throw new ShopError(409,'Somente envios com falha confirmada podem ser tentados novamente.');
+      if(Date.now()-current.last_customer_at>=86400000)throw new ShopError(409,'A janela de resposta terminou. Aguarde uma nova mensagem do cliente.');
+      return commit(()=>{job.status='pending';job.error_code=null;const message=current.messages.find(m=>m.id===job.message_id);message.delivery_status='pending';current.version++;return current;});
+    },
+    completeWhatsAppSend(id,{status,external_id=null,error_code=null,error_subcode=null}){
       const job=integrationJobs.get(id);if(!job)return;
-      return commit(()=>{job.status=status;job.external_id=external_id;const current=conversations.get(job.conversation_id),message=current?.messages.find(m=>m.id===job.message_id);if(message){message.delivery_status=status;message.external_id=external_id;current.version++;}return true;});
+      return commit(()=>{job.status=status;job.external_id=external_id;job.error_code=error_code;job.error_subcode=error_subcode;const current=conversations.get(job.conversation_id),message=current?.messages.find(m=>m.id===job.message_id);if(message){message.delivery_status=status;message.external_id=external_id;current.version++;}return true;});
     },
     async transfer(user,id,input){
       const company=await companyFor(user);if(database)throw new ShopError(503,'Transferências disponíveis no piloto local.');

@@ -65,3 +65,20 @@ test('LLM: atualização de preço durante a chamada usa o catálogo mais recent
  const user={id:'live-price',role:'Administrador'};await service.createCompany(user,{name:'Preço atual',slug:'preco-atual'});selected=await service.save(user,{name:'Arroz',sku:'1',price_cents:100,availability:'AVAILABLE'});
  const reply=service.chat(user,{message:'arroz'});await running;await service.save(user,{name:'Arroz',sku:'1',price_cents:200,availability:'AVAILABLE',version:selected.version},selected.id);release();assert.match((await reply).reply,/2,00/);
 });
+
+test('WhatsApp: mapa explícito de destinatário, status de falha/entrega e reenvio com isolamento',async()=>{
+ const service=createShopService({allowMemory:true}),owner={id:'delivery-owner',role:'Administrador'},other={id:'delivery-other',role:'Administrador'};
+ const company=await service.createCompany(owner,{name:'Envio de teste',slug:'envio-teste'});await service.createCompany(other,{name:'Outra loja',slug:'outra-envio'});
+ const canonical='558393858500',verified='5583993858500';let calls=0;
+ const env={WHATSAPP_CLOUD_ENABLED:'true',WHATSAPP_CLOUD_MODE:'test',WHATSAPP_ACCESS_TOKEN:'token',WHATSAPP_APP_SECRET:'secret',WHATSAPP_VERIFY_TOKEN:'verify',WHATSAPP_PHONE_NUMBER_ID:'123',WHATSAPP_COMPANY_ID:company.id,WHATSAPP_TEST_RECIPIENTS:canonical,WHATSAPP_TEST_RECIPIENT_MAP:JSON.stringify({[canonical]:verified})};
+ const cloud=createWhatsAppCloud({service,env,budget:budget(),fetchImpl:async(url,options)=>{calls++;assert.equal(JSON.parse(options.body).to,verified);return Response.json({messages:[{id:'external-'+calls}]});}});
+ service.ingestWhatsApp(company.id,{id:'in-mapped',from:canonical,phone_id:'123',timestamp:Date.now(),text:'oi'});await cloud.tick();await cloud.tick();
+ const [summary]=await service.listConversations(owner);let current=await service.conversation(owner,summary.id);const messageId=current.messages.at(-1).id;
+ assert.equal(service.applyWhatsAppStatus(company.id,{id:'external-1',status:'failed',error_code:131031}),true);assert.equal(service.integrationStatus(company.id).last_error,131031);
+ assert.equal(service.applyWhatsAppStatus(company.id,{id:'external-1',status:'sent'}),false);
+ current=await service.conversation(owner,current.id);assert.equal(current.messages.at(-1).delivery_status,'failed');
+ await assert.rejects(service.retryWhatsAppSend(other,current.id,{message_id:messageId,version:current.version}),e=>e.status===404);
+ await service.retryWhatsAppSend(owner,current.id,{message_id:messageId,version:current.version});await cloud.tick();assert.equal(calls,2);
+ assert.equal(service.applyWhatsAppStatus(company.id,{id:'external-2',status:'delivered'}),true);assert.equal(service.applyWhatsAppStatus(company.id,{id:'external-2',status:'read'}),true);assert.equal(service.applyWhatsAppStatus(company.id,{id:'external-1',status:'failed',error_code:131031}),false);assert.equal(service.applyWhatsAppStatus(company.id,{id:'external-2',status:'failed',error_code:131031}),false);
+ assert.equal((await service.conversation(owner,current.id)).messages.at(-1).delivery_status,'read');
+});

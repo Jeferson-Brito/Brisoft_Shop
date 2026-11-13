@@ -11,7 +11,7 @@ O Google informa que conteúdo do nível gratuito pode ser usado para melhorar o
 As chaves ficam exclusivamente em `server/.env`, ignorado pelo Git. Nunca inserir no frontend, README, prints ou comentários de PR. O exemplo de variáveis está em `server/.env.example`.
 
 - `GEMINI_ENABLED=true`, `GEMINI_API_KEY`, `GEMINI_COMPANY_ID`, `GEMINI_MODEL`, `GEMINI_DAILY_LIMIT`.
-- `WHATSAPP_CLOUD_ENABLED=true`, `WHATSAPP_CLOUD_MODE=test`, `WHATSAPP_COMPANY_ID`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_APP_SECRET`, `WHATSAPP_VERIFY_TOKEN`, `WHATSAPP_TEST_RECIPIENTS` (números internacionais apenas com dígitos, separados por vírgula), `WHATSAPP_GRAPH_VERSION` e `WHATSAPP_DAILY_LIMIT`.
+- `WHATSAPP_CLOUD_ENABLED=true`, `WHATSAPP_CLOUD_MODE=test`, `WHATSAPP_COMPANY_ID`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_APP_SECRET`, `WHATSAPP_VERIFY_TOKEN`, `WHATSAPP_TEST_RECIPIENTS` (identificadores wa_id dos destinatários verificados, apenas com dígitos e separados por vírgula), `WHATSAPP_GRAPH_VERSION` e `WHATSAPP_DAILY_LIMIT`.
 
 A vinculação é por identificador da empresa no servidor. O piloto suporta um projeto Gemini e um número Cloud API, atribuídos explicitamente a uma empresa. Não é ainda o cadastro autônomo de números de vários contratantes. A página Configurações mostra o estado e a cota local sem revelar segredos. Reinicie o backend após mudar o `.env`.
 
@@ -41,7 +41,7 @@ O relay recusa todas as outras rotas, inclusive login, produtos e arquivos. O ca
 
 Mensagens recebidas, IDs de deduplicação e fila de envio ficam no mesmo arquivo local do piloto. O webhook confirma somente depois de salvar a mensagem; a IA e o envio são processados fora da requisição. Após transferência humana o bot pausa. Respostas da equipe entram na mesma fila.
 
-A interface distingue envio pendente, em processamento, aceito pela API, com falha ou incerto. “Aceito” não significa entregue/lido. Timeout ou reinício durante envio não dispara reenvio automático: confirme no celular antes de reenviar, para evitar duplicações. Esta etapa não implementa mídia, templates, reprocessamento automático de falhas, status de leitura, banco definitivo ou múltiplas instâncias.
+A interface distingue envio pendente, em processamento, aceito pela API, com falha ou incerto. “Aceito” não significa entregue/lido. Eventos posteriores da Meta atualizam a mensagem para enviada, entregue, lida ou falha, inclusive com indicação do erro de bloqueio 131031. Timeout ou reinício durante envio não dispara reenvio automático: confirme no celular antes de reenviar, para evitar duplicações. Esta etapa não implementa mídia, templates, reprocessamento automático de falhas, banco definitivo ou múltiplas instâncias.
 
 ## Fontes oficiais
 
@@ -50,3 +50,11 @@ A interface distingue envio pendente, em processamento, aceito pela API, com fal
 - Meta: https://whatsappbusiness.com/developers/developer-hub/
 - Meta: https://developers.facebook.com/documentation/business-messaging/whatsapp/get-started
 - Cloudflare: https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/
+
+No Brasil, o `wa_id` retornado pela Meta pode ter formato diferente do telefone digitado na tela, inclusive sem o nono dígito. Use o identificador do contato confirmado no payload da Meta. Não libere contatos por aproximação nem remova dígitos de todos os números automaticamente. O diagnóstico administrativo registra quantidades de callbacks aceitos/ignorados e o último motivo, sem armazenar tokens ou corpos de mensagens nesses contadores.
+
+Para o sandbox que exigir o telefone verificado diferente do wa_id de entrada, configure `WHATSAPP_TEST_RECIPIENT_MAP` como um objeto JSON explícito de wa_id para telefone verificado. Não há conversão aproximada de números. Administradores podem tentar novamente envios com falha confirmada dentro da janela de 24h; envios incertos não têm reenvio automático. Uma restrição da própria Meta pode impedir o envio até que os dados/verificação da empresa sejam aprovados, mesmo se o número de teste aparecer conectado e a API aceitar a solicitação. Nenhuma forma de pagamento é cadastrada para contornar esse bloqueio.
+
+## Estado validado do piloto
+
+O Gemini foi testado com chamada real. O webhook recebeu mensagens reais do destinatário de teste e a IA gerou a resposta. O envio foi aceito pela API, mas um evento posterior da Meta informou falha 131031 (Business Account locked). O painel da Meta exige a verificação do titular/negócio antes de liberar respostas dessa conta. Portanto o atendimento no WhatsApp ainda não está operacional de ponta a ponta. A verificação não foi concluída nem foram cadastrados pagamentos. O túnel temporário precisa ser reiniciado e seu callback atualizado quando o ambiente local é reiniciado.

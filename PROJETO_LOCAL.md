@@ -80,7 +80,7 @@ npm test --prefix client
 npm run build --prefix client
 ```
 
-132 testes do servidor e 19 da interface passaram, incluindo testes herdados e novos. Os novos verificam isolamento do catálogo, preços, conflitos de edição, XML inseguro, confirmação atômica, importação duplicada, transferência entre setores, pausa do bot e persistência após reinicialização.
+133 testes do servidor e 19 da interface passaram, incluindo testes herdados e novos. Os novos verificam isolamento do catálogo, preços, conflitos de edição, XML inseguro, confirmação atômica, importação duplicada, transferência entre setores, pausa do bot e persistência após reinicialização.
 
 Também foram conferidos no servidor local: autenticação obrigatória, indisponibilidade das rotas antigas de indicadores e QR Code, consulta ao catálogo, departamentos e conversas de teste.
 
